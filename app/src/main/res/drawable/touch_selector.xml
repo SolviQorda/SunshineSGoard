@@ -1,0 +1,44 @@
+<?xml version ="1.0" encoding="utf-8"?>
+    <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--state when a row is being pressed but hasn't yet been activated (finger down) -->
+    <item android:state_pressed="true">
+
+    </item>
+
+    <!-- when the item is activated. In single choice mode it flagas the entire row of a listvierw -->
+    <item android:state_activated="true"
+          android:drawable="@color/sunshine_light_blue">
+
+    </item>
+
+    <!-- default - just chilling -->
+    <item android:drawable="@android:color/transparent">
+
+    </item>
+
+
+
+</selector>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

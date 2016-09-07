@@ -1,9 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"
+>
+
 
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings" translatable="true">Settings</string>
     <string name="action_refresh" translatable="true">Refresh</string>
 
+
+    //Preferences
+
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_label">Location</string>
+    <string name="pref_location_default" translatable="false">90210</string>
+
+    <string name="pref_country_key" translatable="false">country</string>
+    <string name="pref_country_label">Country</string>
+    <string name="pref_country_default">GB</string>
+
+    <string name="pref_units_metric" translatable="true">Metric</string>
+    <string name="pref_units_imperial" translatable="true">Imperial</string>
+    <string name="units_title" translatable="true">Temperature Units</string>
+    <string name="pref_units_key" translatable="true">units</string>
+
+    <string name="action_map" translatable="true">Location Map</string>
+
+    <string name="share" translatable="true">Share</string>
+
+    <string name="CONTENT_PROVIDER" translatable="false">com.example.android.sunshine.app</string>
+    <string name="CONTENT_PROVIDER_CLASS" translatable="false">WeatherProvider.java</string>
+
+    <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
+    <string name="today">Today</string>
+
+    <!-- Date label when displaying tomorrow's weather forecast [CHAR LIMIT=20] -->
+    <string name="tomorrow">Tomorrow</string>
+
+    <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
+    <string name="format_full_friendly_date"><xliff:g id="day">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g></string>
+
+    <!--Temperature formats -->
+    <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>
+
+    <!--Windspeed formats -->
+    <!--mph-->
+    <string name="format_wind_mph">Wind: <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g></string>
+    <!--kmh-->
+    <string name="format_wind_kmh">Wind: <xliff:g id="speed">%1$1.0f</xliff:g> kmh <xliff:g id="direction">%2$s</xliff:g></string>
+    <!--pressure format-->
+    <string name="format_pressure">Pressure: <xliff:g id="pressure">%1.0f</xliff:g> hPa</string>
+
+    <!--humidity format-->
+    <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
 </resources>
