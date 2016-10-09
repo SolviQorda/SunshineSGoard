@@ -123,7 +123,6 @@ public class WeatherProvider extends ContentProvider {
         final String    authority = WeatherContract.CONTENT_AUTHORITY;
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // WeatherContract to help define the types to the UriMatcher.
-
 //        static final int WEATHER = 100;
 //        static final int WEATHER_WITH_LOCATION = 101;
 //        static final int WEATHER_WITH_LOCATION_AND_DATE = 102;

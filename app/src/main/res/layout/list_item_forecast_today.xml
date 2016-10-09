@@ -14,6 +14,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_height="wrap_content"
@@ -24,7 +25,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/list_item_date_textview"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="?android:textAppearanceLarge"
+            android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white"
            />
 
@@ -44,6 +45,8 @@
             android:textSize="36sp"
             android:id="@+id/list_item_low_textview"
             android:textColor="@color/white"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             />
 
     </LinearLayout>
@@ -52,6 +55,7 @@
         android:layout_width="0dp"
         android:layout_weight="5"
         android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal|bottom">
@@ -60,7 +64,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/list_item_icon"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -68,7 +73,7 @@
             android:id="@+id/list_item_forecast_textview"
             android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="?android:textAppearanceLarge"
+            android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white"
             />
 

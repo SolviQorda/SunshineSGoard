@@ -41,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:orientation="vertical">
 
             <TextView
@@ -54,6 +55,8 @@
                 android:fontFamily="sans-serif-light"
                 android:textSize="48sp"
                 android:textColor="@color/grey"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/detail_low_textview"/>
@@ -80,7 +83,14 @@
                 android:textSize="22sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
                 android:id="@+id/detail_pressure_textview"/>
+
+            <com.example.android.sunshine.app.myCompassView
+                android:id="@+id/detail_compass"
+                android:layout_width="70dp"
+                android:layout_marginLeft="5dp"
+                android:layout_height="70dp"/>
 
         </LinearLayout>
         
@@ -88,13 +98,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:orientation="vertical">
             
             <ImageView 
                 android:layout_width="wrap_content" 
                 android:layout_height="wrap_content"
-                android:id="@+id/detail_icon"/>
+                android:id="@+id/detail_icon"
+                android:adjustViewBounds="true"/>
             
             <TextView
                 android:fontFamily="sans-serif-condensed"

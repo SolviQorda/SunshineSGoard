@@ -2,6 +2,7 @@ package com.example.android.sunshine.app;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,17 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
  */
 public class ForecastAdapter extends CursorAdapter {
 
-    private Context context;
+
+    private static final String LOG_TAG = ForecastAdapter.class.getSimpleName();
+
 
     private static final int VIEW_TYPE_COUNT = 2;
     private static final int VIEW_TYPE_TODAY = 0;
@@ -23,10 +28,11 @@ public class ForecastAdapter extends CursorAdapter {
 
     private boolean mUseTodayLayout = true;
 
+    final private Context mContext;
 
     public ForecastAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-        this.context = context;
+        mContext = context;
     }
 
     public void setUseTodayLayout(boolean useTodayLayout) {
@@ -35,7 +41,11 @@ public class ForecastAdapter extends CursorAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return (position == 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+
+        Log.v("mUseTodayLayout: ", Boolean.toString(mUseTodayLayout));
+        return (position == 0 && mUseTodayLayout) ?  VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+
+
     }
 
     @Override
@@ -89,7 +99,10 @@ public class ForecastAdapter extends CursorAdapter {
      */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
+//        Log.v("cursor position", String.format("%d", cursor.getPosition()));
         int viewType = getItemViewType(cursor.getPosition());
+//        Log.v("new v mUseTodayLayout: ", Boolean.toString(mUseTodayLayout));
+//        Log.v("nv viewtype: ", String.format("value = %d", viewType));
         int layoutId = -1;
         if(viewType == VIEW_TYPE_TODAY) {
             layoutId = R.layout.list_item_forecast_today;
@@ -114,40 +127,52 @@ public class ForecastAdapter extends CursorAdapter {
 
        ViewHolder viewHolder = (ViewHolder) view.getTag();
         //get placeholder image for now
+        Log.v("bv mUseTodayLayout: ", Boolean.toString(mUseTodayLayout));
         int viewType = getItemViewType(cursor.getPosition());
+        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        int fallbackIconId;
+
+        Log.v("bv viewtype: ", String.format("value = %d", viewType));
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
-                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
-                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+                fallbackIconId = Utility.getArtResourceForWeatherCondition(
+                        weatherId);
                 break;
             }
-            case VIEW_TYPE_FUTURE_DAY: {
-                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
-                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+            default: {
+                fallbackIconId = Utility.getIconResourceForWeatherCondition(
+                        weatherId);
                 break;
             }
 
         }
+
+        Glide.with(mContext)
+                .load(Utility.getArtUrlForWeatherCondition(mContext, weatherId))
+                .error(fallbackIconId)
+                .crossFade()
+                .into(viewHolder.iconView);
 
 
         long dateInMillis = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
 
 
-        String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
-        viewHolder.descriptionView.setText(description);
+        String description = Utility.getStringForWeatherCondition(context, weatherId);
+        viewHolder.descriptionView.setContentDescription(context.getString(R.string.a11y_forecast, description));
 
-        //Read user preference from metric or imperial units
-        boolean isMetric = Utility.isMetric(context);
 
         //Read high temp from cursor
-        double high = cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
-
-        viewHolder.highTempView.setText( Utility.formatTemperature(context, high, isMetric));
+        String high = Utility.formatTemperature(context,
+                cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP));
+        viewHolder.highTempView.setText(high);
+        viewHolder.highTempView.setContentDescription(context.getString(R.string.a11y_high_temp, high));
 
         //READ LOW TEMP FROM CURSOR
-        double low = cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
-        viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
+        String low = Utility.formatTemperature(context,
+                cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP));
+        viewHolder.lowTempView.setText(low);
+        viewHolder.lowTempView.setContentDescription(context.getString(R.string.a11y_low_temp, low));
 //
 //        TextView tv = (TextView)view;
 //        tv.setText(convertCursorRowToUXFormat(cursor));

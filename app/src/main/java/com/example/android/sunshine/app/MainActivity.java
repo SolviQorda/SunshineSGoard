@@ -8,14 +8,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback{
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private boolean mTwoPane;
     private String mLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +39,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             // fragment transaction.
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.weather_detail_container, new ForecastFragment(), DETAILFRAGMENT_TAG)
+                        .replace(R.id.weather_detail_container, new DetailFragment(), DETAILFRAGMENT_TAG)
                         .commit();
             } else {
                 mTwoPane = false;
@@ -43,6 +49,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             ForecastFragment forecastFragment = ((ForecastFragment)getSupportFragmentManager()
                     .findFragmentById(R.id.fragment_forecast));
             forecastFragment.setUseTodayLayout(!mTwoPane);
+
+            SunshineSyncAdapter.initializeSyncAdapter(this);
+
+            if (!checkPlayServices()) {
+
+            }
 
         }
 
@@ -69,32 +81,8 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             this.startActivity(settingsIntent);
             return true;
         }
-        if (id == R.id.action_map)
-        {
-            openPreferredLocationInMap();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void openPreferredLocationInMap() {
-
-        String location = Utility.getPreferredLocation(this);
-        Uri geolocation = Uri.parse("geo:0,0").buildUpon().
-                appendQueryParameter("q", location).build();
-
-
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-        mapIntent.setData(geolocation);
-
-        if(mapIntent.resolveActivity(getPackageManager()) != null)
-        {
-            startActivity(mapIntent);
-        } else
-        {
-            Log.d(LOG_TAG, "no map app available");
-        }
     }
 
     @Override
@@ -139,6 +127,23 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             startActivity(intent);
         }
     }
+
+    public boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if(resultCode != ConnectionResult.SUCCESS) {
+            if(apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this,resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+
+            } else {
+                Log.i(LOG_TAG, "this device is not supported");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
 
 
 }

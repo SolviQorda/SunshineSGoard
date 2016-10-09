@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.sunshine.app.data.WeatherContract;
 
 /**
@@ -71,6 +72,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mHumidityView;
     private TextView mWindspeedView;
     private TextView mPressureView;
+    private myCompassView mMyCompassView;
 
     public DetailFragment(){
         setHasOptionsMenu(true);
@@ -95,6 +97,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
         mWindspeedView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+
+        mMyCompassView = (myCompassView) rootView.findViewById(R.id.detail_compass);
 
         return rootView;
 
@@ -170,38 +174,51 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
 
-            mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
-
+            Glide.with(this)
+                    .load(Utility.getArtUrlForWeatherCondition(getActivity(), weatherId))
+                    .error(Utility.getArtResourceForWeatherCondition(weatherId))
+                            .into(mIconView);
             long date = data.getLong(COL_WEATHER_DATE);
             String friendlyDateText = Utility.getDayName(getActivity(), date);
             String dateText = Utility.getFormattedMonthDay(getActivity(), date);
             mFriendlyDateView.setText(friendlyDateText);
             mDateView.setText(dateText);
 
-            String weatherDescription = data.getString(COL_WEATHER_DESC);
+            String weatherDescription = Utility.getStringForWeatherCondition(getActivity(), weatherId);
             mDescriptionView.setText(weatherDescription);
+            mDescriptionView.setContentDescription(getString(R.string.a11y_forecast, weatherDescription));
+
+            // For accessibility, add a content description to the icon field
+            mIconView.setContentDescription(getString(R.string.a11y_forecast_icon, weatherDescription));
 
             boolean isMetric = Utility.isMetric(getActivity());
 
             double high = data.getDouble(COL_WEATHER_MAX_TEMP);
-            String highString = Utility.formatTemperature(getActivity(), high, isMetric);
+            String highString = Utility.formatTemperature(getActivity(), high);
             mHighTempView.setText(highString);
+            mHighTempView.setContentDescription(getString(R.string.a11y_high_temp, weatherDescription));
 
             double low = data.getDouble(COL_WEATHER_MIN_TEMP);
-            String lowString = Utility.formatTemperature(getActivity(), low, isMetric);
+            String lowString = Utility.formatTemperature(getActivity(), low);
             mLowTempView.setText(lowString);
+            mLowTempView.setContentDescription(getString(R.string.a11y_low_temp, weatherDescription));
 
             float humidity = data.getFloat(COL_WEATHER_HUMIDITY);
             mHumidityView.setText(getActivity().getString(R.string.format_humidity, humidity));
+            mHumidityView.setContentDescription(mHumidityView.getText());
 
             float windSpeed = data.getFloat(COL_WEATHER_WIND_SPEED);
             float windDirStr = data.getFloat(COL_WEATHER_DEGREES);
-            mWindspeedView.setText(getActivity().getString(R.string.format_wind_kmh, windSpeed, windDirStr));
+            mWindspeedView.setText(Utility.getFormattedWind(getActivity(), windSpeed, windDirStr));
+            mWindspeedView.setContentDescription(mWindspeedView.getText());
 
             float pressure = data.getFloat(COL_WEATHER_PRESSURE);
             mPressureView.setText(getActivity().getString(R.string.format_pressure, pressure));
+            mPressureView.setContentDescription(mPressureView.getText());
 
             mForecast = String.format("%s - %s - %s/%s", dateText, weatherDescription, high, low);
+
+            mMyCompassView.update(windDirStr);
 
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
@@ -209,6 +226,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
 
     }
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader)
